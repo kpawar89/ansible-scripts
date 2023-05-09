@@ -1,0 +1,36 @@
+- name: Install NVIDIA CUDA driver using apt
+  hosts: 127.0.0.1
+  gather_facts: true
+  become: yes
+  tasks:
+    # Below for Ubuntu 18.04/20.04/22.04
+    - name: Add CUDA apt key for Ubuntu
+      apt_key:
+        url: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+        state: present
+      when: ansible_distribution == "Ubuntu"
+    - name: Add NVIDIA CUDA repo on Ubuntu 18.04
+      apt_repository:
+        repo: "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
+        state: present
+        filename: cuda-ubuntu1804-x86_64.list
+      when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "18.04"
+    - name: Add NVIDIA CUDA repo on Ubuntu 20.04
+      apt_repository:
+        repo: "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+        state: present
+        filename: cuda-ubuntu2004-x86_64.list
+      when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "20.04"
+    - name: Add NVIDIA CUDA repo on Ubuntu 22.04
+      apt_repository:
+        repo: "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /"
+        state: present
+        filename: cuda-ubuntu2204-x86_64.list
+      when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+    - name: Install NVIDIA CUDA driver on Ubuntu
+      apt:
+        name: cuda
+        state: latest
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
